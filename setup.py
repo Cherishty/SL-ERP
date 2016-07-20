@@ -1,4 +1,4 @@
 from distutils.core import setup
 import py2exe
 
-setup(console=["StSalary1.0.py"])
+setup(console=["menu.py"])
