@@ -1,27 +1,27 @@
-# -*- encoding:UTF-8 -*-
-import sitecustomize
 import xlrd
 import xlwt
+from xlutils.copy import copy
+import XLFormat
 
 
 def readXls():
-    print('------------------------------------')
-    print unicode('自络筒工序 工资计算v1.3', 'utf-8')  # decode via unicode function
-    print unicode('请将需要统计的报表放在该目录的data文件夹下,并从0.xls开始顺序命名', 'utf-8')
-    print unicode('请输入待汇总的表格份数', 'utf-8')
+    print('\n------------------------------------')
+    print('自络筒工序 工资计算v1.4')
+    print('请将需要统计的报表放在该目录的data文件夹下,并从0.xls开始顺序命名')
+    print('请输入待汇总的表格份数')
     sheet = {}
 
-    num = raw_input()
+    num = input()
     while num.isalpha():
-        print unicode('输入错误，请重新输入合法数字', 'utf-8')
-        num = raw_input()
+        print('输入错误，请重新输入合法数字')
+        num = input()
 
     for each in range(int(num)):
         try:
-            data = xlrd.open_workbook('data/' + str(each) + '.xls')
+            data = xlrd.open_workbook('dataZLT/' + str(each) + '.xls')
         except:
-            print unicode('没有找到该目录或该文件，请检查您的路径或命名\n\n', 'utf-8')
-            print '------------------------------------\n\n'
+            print('没有找到该目录或该文件，请检查您的路径或命名\n\n')
+            print('------------------------------------\n\n\n')
             return
         else:
             table = data.sheets()[0]
@@ -54,22 +54,24 @@ def readXls():
 
 
 def writeXls(sheet):
-    file = xlwt.Workbook(encoding='utf-8')  # encoding='utf-8' to support chinese output
-    table = file.add_sheet('1')
-    i = 0
-    k = 0
-    title = ['姓名', '早', '中', '夜', '天数', '12h', '事假', '病假', '旷工', '基本工资', '超产工资']
-    for each in title:
-        table.write(i, k, each)
-        k += 1
-    i += 1
+    rb = xlrd.open_workbook('result.xls', formatting_info=True)
+    wb = copy(rb)
+    table = wb.get_sheet(0)
+    i = 3
     for list in sheet.values():
-        j = 0
+        j = 1
         for each in list:
-            table.write(i, j, each)
+            XLFormat.setOutCell(table, j, i, each)
+            XLFormat.setOutCell(table, 18, i, xlwt.Formula('SUM(K%d:Q%d)-R%d' % (i + 1, i + 1, i + 1)))
+            XLFormat.setOutCell(table, 23, i, xlwt.Formula('S%d-T%d-U%d' % (i + 1, i + 1, i + 1)))
             j += 1
         i += 1
-    file.save('result.xls')
+    for each in range(i, 41):
+        XLFormat.setOutCell(table, 18, each, xlwt.Formula('SUM(K%d:Q%d)-R%d' % (i + 1, i + 1, i + 1)))
+        XLFormat.setOutCell(table, 23, each, xlwt.Formula('S%d-T%d-U%d' % (i + 1, i + 1, i + 1)))
+    for j in range(75, 89):
+        XLFormat.setOutCell(table, j - ord('A'), 41, xlwt.Formula('SUM(%c4:%c41)' % (chr(j), chr(j))))
+    wb.save('result.xls')
 
 
 if __name__ == '__main__':
@@ -78,4 +80,4 @@ if __name__ == '__main__':
         sheet = readXls()
 
     writeXls(sheet)
-    print "run successfully!"
+    print("run successfully!")
