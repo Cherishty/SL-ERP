@@ -7,15 +7,8 @@ import XLFormat
 def readXls():
     print('\n------------------------------------')
     print('销售汇总 v1.2')
-    print('请将需要统计的报表放在该目录的data文件夹下,并从0.xls开始顺序命名')
-    print('请将用于记录结果的 样表 放到当前目录下，注意命名为“销售报表.xls”')
+    print('请将需要统计的报表放在该目录的‘销售数据’文件夹下,并从0.xls开始顺序命名')
     print('请输入待汇总的表格份数')
-
-    try:
-        rb = xlrd.open_workbook('销售报表.xls')
-    except:
-        print('没有找到 销售报表.xls，操作失败！请检查您的路径或命名\n\n')
-        return
 
     companyList = {}
     num = input()
@@ -25,7 +18,7 @@ def readXls():
 
     for each in range(int(num)):
         try:
-            data = xlrd.open_workbook('datass/' + str(each) + '.xls')
+            data = xlrd.open_workbook('销售数据/' + str(each) + '.xls')
         except:
             print('没有找到待读取的%d.xls，操作失败！请检查您的路径或命名\n\n' % each)
             return
@@ -46,7 +39,7 @@ def readXls():
 
 
 def writeXls(sheet):
-    rb = xlrd.open_workbook('销售报表.xls', formatting_info=True)
+    rb = xlrd.open_workbook('sheet/销售报表.xls', formatting_info=True)
     wb = copy(rb)
     table = wb.get_sheet(0)
     i = 2
