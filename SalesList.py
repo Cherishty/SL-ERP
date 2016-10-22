@@ -18,7 +18,7 @@ def readXls():
 
     for each in range(int(num)):
         try:
-            data = xlrd.open_workbook('销售数据/' + str(each) + '.xls')
+            data = xlrd.open_workbook('data/2016.09工资..xls')
         except:
             print('没有找到待读取的%d.xls，操作失败！请检查您的路径或命名\n\n' % each)
             return
@@ -39,20 +39,21 @@ def readXls():
 
 
 def writeXls(sheet):
-    rb = xlrd.open_workbook('sheet/销售报表.xls', formatting_info=True)
+    rb = xlrd.open_workbook('data/2016.09工资..xls', formatting_info=True)
     wb = copy(rb)
     table = wb.get_sheet(0)
     i = 2
+    '''
     for key in sheet:
         XLFormat.setOutCell(table, 2, i, key)
         XLFormat.setOutCell(table, 6, i, sheet[key])
-        i += 1
+        i += 1'''
     wb.save('销售报表.xls')
 
 
 if __name__ == '__main__':
     sheet = {}
-    while not sheet:
-        sheet = readXls()
+    #while not sheet:
+        #sheet = readXls()
     writeXls(sheet)
     print("运行成功，结果保存在该目录的 销售报表.xls中")
